@@ -25,6 +25,7 @@ const generateQuiz = async (req, res) => {
             "text": "Nội dung câu hỏi?",
             "options": ["Đáp án A", "Đáp án B", "Đáp án C", "Đáp án D"],
             "correctAnswer": 0  // Chỉ số của đáp án đúng, từ 0 đến 3
+            "explaination": "Giải thích đáp án đúng."
             }
         ]
         }`;
@@ -75,15 +76,7 @@ const getQuizById = async (req, res) => {
             return res.status(403).json({ success: false, message: "Không có quyền truy cập quiz này" });
         }
 
-        res.status(200).json({ 
-            id: quiz._id,
-            title: quiz.title,
-            questions: quiz.questions.map(q => ({
-                text: q.text,
-                options: q.options,
-                correctAnswer: q.correctAnswer,
-            })),
-        });
+        res.status(200).json(quiz);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
