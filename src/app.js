@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const responseHandler = require("./middlewares/responseHandler");
 const authRoutes = require("./routes/authRoutes");
+const quizRoutes = require("./routes/quizRoutes");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(responseHandler); // Đăng ký formatter
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/quizzes", quizRoutes);
 
 // Health check
 app.get("/", (req, res) => res.send("API is running..."));
