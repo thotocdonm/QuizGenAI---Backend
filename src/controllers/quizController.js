@@ -8,14 +8,14 @@ const client = new OpenAI({
 
 const generateQuiz = async (req, res) => {
     try {
-        const { title, numQuestions, difficulty } = req.body;
+        const { title, topic, numQuestions, difficulty } = req.body;
         const owner = req.user.id;
 
-        // Tạo prompt cho Gemini
+        // Tạo prompt cho AI
         const prompt = `Hệ thống phản hồi dưới dạng JSON thuần túy. 
         Không bao gồm markdown, không giải thích, không văn bản thừa.
 
-        Nhiệm vụ: Tạo ${numQuestions} câu hỏi trắc nghiệm chủ đề "${title}" độ khó "${difficulty}".
+        Nhiệm vụ: Tạo ${numQuestions} câu hỏi trắc nghiệm theo chủ đề "${title}" được mô tả "${topic}" với độ khó "${difficulty}".
         Ngôn ngữ: Tiếng Việt.
 
         Yêu cầu cấu trúc JSON chính xác như sau:
