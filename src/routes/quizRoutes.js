@@ -15,4 +15,10 @@ router.get("/:id", verifyToken, quizController.getQuizById);
 // GET /api/quizzes/public/:id (Không cần token)
 router.get("/public/:id", quizController.getQuizPublic);
 
+// POST /api/quizzes/submit (Không cần token)
+router.post("/submit/:id", quizController.submitQuiz);
+
+// PUT /api/quizzes/update (Cần token)
+router.put("/update/:id", verifyToken, quizController.updateQuiz);
+
 module.exports = router;

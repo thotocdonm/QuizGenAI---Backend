@@ -100,9 +100,55 @@ const getQuizPublic = async (req, res) => {
     }
 };
 
+const submitQuiz = async (req, res) => {
+    try {
+        const { answers } = req.body;
+        const quiz = await Quiz.findById(req.params.id);
+        if (!quiz) return res.status(404).json({ success: false, message: "Quiz không tìm thấy" });
+
+        let score = 0;
+        quiz.questions.forEach((question, index) => {
+            if (answers[index] === question.correctAnswer) {
+                score ++;
+            }
+        });
+
+        res.status(200).json({ success: true, score });
+    } catch (error) {
+        console.error("Submit quiz error:", error);
+        res.status(500).json({ success: false, message: "Lỗi khi nộp bài quiz" });
+    }
+};
+
+const updateQuiz = async (req, res) => {
+    try {
+        const {title, topic, numQuestions, difficulty, questions } = req.body;
+        const quiz = await Quiz.findById(req.params.id);
+        if (!quiz) return res.status(404).json({ success: false, message: "Quiz không tìm thấy" });
+
+        if (quiz.owner.toString() !== req.user.id) {
+            return res.status(403).json({ success: false, message: "Không có quyền chỉnh sửa quiz này" });
+        }
+
+        quiz.title = title;
+        quiz.topic = topic;
+        quiz.numQuestions = numQuestions;
+        quiz.difficulty = difficulty;
+        quiz.questions = questions;
+        
+        await quiz.save();
+        res.status(200).json({ success: true, message: "Cập nhật quiz thành công" });
+    } catch (error) {
+        console.error("Update quiz error:", error);
+        res.status(500).json({ success: false, message: "Lỗi khi cập nhật quiz" });
+    }
+};
+
 module.exports = {
     generateQuiz,
     getQuizById,
     getQuizPublic,
     getAllQuizzes,
+    submitQuiz,
+    updateQuiz,
 };
