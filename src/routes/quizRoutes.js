@@ -12,6 +12,9 @@ router.get("/", verifyToken, quizController.getAllQuizzes);
 // GET /api/quiz/public/:id (Không cần token)
 router.get("/public/:id", quizController.getQuizPublic);
 
+// POST /api/quiz/:id/submit (Không cần token)
+router.post("/:id/submit", quizController.submitQuiz);
+
 // GET /api/quiz/:id (Cần token và check owner)
 router.get("/:id", verifyToken, quizController.getQuizById);
 

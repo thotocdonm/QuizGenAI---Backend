@@ -100,6 +100,7 @@ const getQuizPublic = async (req, res) => {
     res.status(200).json({
       _id: quiz._id,
       title: quiz.title,
+      difficulty: quiz.difficulty,
       questions: quiz.questions.map((q) => ({
         text: q.text,
         options: q.options,
@@ -107,6 +108,41 @@ const getQuizPublic = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+const submitQuiz = async (req, res) => {
+  try {
+    const quiz = await Quiz.findById(req.params.id);
+    if (!quiz) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Quiz không tìm thấy" });
+    }
+
+    const rawAnswers = req.body?.answers;
+    let answers = [];
+    if (Array.isArray(rawAnswers)) answers = rawAnswers;
+    else if (rawAnswers && typeof rawAnswers === "object") {
+      answers = Object.keys(rawAnswers)
+        .sort((a, b) => Number(a) - Number(b))
+        .map((k) => rawAnswers[k]);
+    }
+
+    let score = 0;
+    quiz.questions.forEach((q, index) => {
+      const correctText = q.options[q.correctAnswer];
+      if (answers[index] === correctText) score += 1;
+    });
+
+    res.status(200).json({
+      success: true,
+      score,
+      total: quiz.questions.length,
+      quiz,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -138,7 +174,7 @@ const updateQuiz = async (req, res) => {
       text: q.text,
       options: q.options,
       correctAnswer: q.correctAnswer,
-      explanation: q.explanation ?? q.explaination ?? "",
+      explanation: q.explanation ?? "",
     }));
     quiz.numQuestions = quiz.questions.length;
 
@@ -154,5 +190,6 @@ module.exports = {
   getQuizById,
   getQuizPublic,
   getAllQuizzes,
+  submitQuiz,
   updateQuiz,
 };
