@@ -19,7 +19,7 @@ app.use(responseHandler); // Đăng ký formatter
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/quizzes", quizRoutes);
+app.use("/api/quiz", quizRoutes);
 
 // Health check
 app.get("/", (req, res) => res.send("API is running..."));

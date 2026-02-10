@@ -3,16 +3,22 @@ const router = express.Router();
 const quizController = require("../controllers/quizController");
 const verifyToken = require("../middlewares/authMiddleware");
 
-// POST /api/quizzes/generate (Cần token)
+// POST /api/quiz/generate (Cần token)
 router.post("/generate", verifyToken, quizController.generateQuiz);
 
-// GET /api/quizzes (Cần token)
+// GET /api/quiz (Cần token)
 router.get("/", verifyToken, quizController.getAllQuizzes);
 
-// GET /api/quizzes/:id (Cần token và check owner)
+// GET /api/quiz/public/:id (Không cần token)
+router.get("/public/:id", quizController.getQuizPublic);
+
+// POST /api/quiz/:id/submit (Không cần token)
+router.post("/:id/submit", quizController.submitQuiz);
+
+// GET /api/quiz/:id (Cần token và check owner)
 router.get("/:id", verifyToken, quizController.getQuizById);
 
-// GET /api/quizzes/public/:id (Không cần token)
-router.get("/public/:id", quizController.getQuizPublic);
+// PUT /api/quiz/:id (Cần token và check owner)
+router.put("/:id", verifyToken, quizController.updateQuiz);
 
 module.exports = router;
