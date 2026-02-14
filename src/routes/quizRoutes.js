@@ -21,4 +21,7 @@ router.post("/submit/:id", quizController.submitQuiz);
 // PUT /api/quizzes/update (Cần token)
 router.put("/update/:id", verifyToken, quizController.updateQuiz);
 
+// POST /api/quiz/:id/start (Cần token)
+router.post("/:id/start", verifyToken, quizController.startQuiz);
+
 module.exports = router;
