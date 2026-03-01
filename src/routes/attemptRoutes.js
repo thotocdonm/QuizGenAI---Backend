@@ -9,4 +9,7 @@ router.get("/", verifyToken, attemptController.getUserAttempts);
 // GET /api/attempt/:id (Cần token)
 router.get("/:id", verifyToken, attemptController.getAttemptById);
 
+// GET /api/attempt/:quizId/quiz (Cần token)
+router.get("/:quizId/quiz", verifyToken, attemptController.getAttemptByQuiz);
+
 module.exports = router;

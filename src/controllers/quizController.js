@@ -1,5 +1,6 @@
 const Quiz = require("../models/Quiz");
 const Attempt = require("../models/Attempt");
+const User = require("../models/User");
 const OpenAI = require("openai");
 const paginate = require("../utils/paginate");
 
@@ -70,7 +71,7 @@ const generateQuiz = async (req, res) => {
           {
             "questionType": "multipleStatements | singleChoice | multipleChoice",
             "text": "Nội dung câu hỏi (nếu multipleStatements phải chứa 4 mệnh đề đánh số 1.,2.,3.,4.)",
-            "options": ["Đáp án A", "Đáp án B", "Đáp án C", "Đáp án D"],
+            "options": ["Đáp án A", "Đáp án B", "Đáp án C", "Đáp án D"] (nếu multipleStatements và singleChoice phải có 1 options bất kì đúng và 3 options còn lại sai, nếu multipleChoice có thể có nhiều hơn 1 options đúng),
             "correctAnswer": 0,
             "explanation": "Giải thích rõ vì sao đáp án đúng."
           }
@@ -78,14 +79,15 @@ const generateQuiz = async (req, res) => {
       }
 
       Quy tắc bắt buộc:
-      - Text phải chứa đúng 4 mệnh đề.
-      - Mỗi mệnh đề phải bắt đầu bằng:
-        1.
-        2.
-        3.
-        4.
-      - Mỗi mệnh đề phải nằm trên một dòng riêng.
-      - Không được tạo ít hơn hoặc nhiều hơn 4 mệnh đề.
+      - Nếu questionType là "multipleStatements":
+        + Text phải chứa đúng 4 mệnh đề.
+        + Mỗi mệnh đề phải bắt đầu bằng:
+          1.
+          2.
+          3.
+          4.
+        + Mỗi mệnh đề phải nằm trên một dòng riêng.
+        + Không được tạo ít hơn hoặc nhiều hơn 4 mệnh đề.
       - Explanation phải nhất quán với correctAnswer.
       - Không được tự mâu thuẫn logic toán học hoặc kiến thức cơ bản.
       - Không thêm bất kỳ văn bản nào ngoài JSON.
@@ -204,6 +206,8 @@ const submitQuiz = async (req, res) => {
     const userId = req.user.id;
     const { duration } = req.body;
 
+    const nameUser = await User.findById(userId).select("fullName");
+
     const perviousAttempts = await Attempt.find({
       quiz: quiz._id,
       user: userId,
@@ -262,6 +266,7 @@ const submitQuiz = async (req, res) => {
 
     const attempt = await Attempt.create({
       user: userId,
+      nameUser: nameUser.fullName,
       quiz: quiz._id,
       quizTitle: quiz.title,
       attemptNumber,
@@ -279,7 +284,7 @@ const submitQuiz = async (req, res) => {
 
 const updateQuiz = async (req, res) => {
   try {
-    const { title, timeLimit = null, difficulty, maxAttempts = null, questions } = req.body;
+    const { title, timeLimit = null, difficulty, maxAttempts = null, questions, private } = req.body;
     const quiz = await Quiz.findById({ _id: req.params.id, isDeleted: false }).select("-isDeleted -deleteAt");
     if (!quiz)
       return res
@@ -298,6 +303,7 @@ const updateQuiz = async (req, res) => {
     quiz.timeLimit = timeLimit;
     quiz.maxAttempts = maxAttempts;
     quiz.questions = questions;
+    quiz.private = private;
 
     await quiz.save();
     res

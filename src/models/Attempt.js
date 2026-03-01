@@ -7,6 +7,7 @@ const attemptSchema = new mongoose.Schema(
             ref: 'User',
             required: true,
         },
+        nameUser: { type: String, required: true }, 
         quiz: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Quiz',
