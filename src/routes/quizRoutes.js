@@ -9,6 +9,9 @@ router.post("/generate", verifyToken, quizController.generateQuiz);
 // GET /api/quiz (Cần token)
 router.get("/", verifyToken, quizController.getAllQuizzes);
 
+//GET /api/quiz/search?keyword=abc
+router.get("/search", quizController.searchQuizzes);
+
 // GET /api/quiz/:id (Cần token và check owner)
 router.get("/:id", verifyToken, quizController.getQuizById);
 
@@ -27,7 +30,6 @@ router.post("/start/:id", verifyToken, quizController.startQuiz);
 // DELETE /api/quiz/:id (Cần token)
 router.delete("/:id", verifyToken, quizController.deleteQuiz);
 
-//GET /api/quiz/search?keyword=abc (Cần token)
-router.get("/search", verifyToken, quizController.searchQuizzes);
+
 
 module.exports = router;
