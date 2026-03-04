@@ -59,7 +59,7 @@ const login = async (req, res) => {
 
 const refreshToken = async (req, res) => {
   const { refreshToken } = req.body;
-  if (!refreshToken) return res.error("Refresh token required", 400);
+  if (!refreshToken) return res.error("Refresh token required", 401);
 
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
@@ -80,6 +80,10 @@ const refreshToken = async (req, res) => {
       process.env.REFRESH_TOKEN_SECRET,
       process.env.REFRESH_TOKEN_EXPIRY,
     );
+
+    user.refreshToken = newRefreshToken;
+    await user.save();
+    
     res.success(
       { accessToken: newAccessToken, refreshToken: newRefreshToken },
       "Token renewed",

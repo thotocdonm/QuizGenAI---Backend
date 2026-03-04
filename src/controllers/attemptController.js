@@ -17,8 +17,8 @@ const getUserAttempts = async (req, res) => {
 
     if (!attempts || attempts.data.length === 0) {
       return res
-        .status(404)
-        .json({ success: false, message: "Attempt không tìm thấy" });
+        .status(200)
+        .json({ message: "Chưa có attempt nào" });
     }
 
     res.status(200).json(attempts);
@@ -33,8 +33,8 @@ const getAttemptById = async (req, res) => {
 
     if (!attempt) {
       return res
-        .status(404)
-        .json({ success: false, message: "Attempt không tìm thấy" });
+        .status(200)
+        .json({ message: "Attempt không tồn tại" });
     }
 
     if (attempt.user.toString() !== req.user.id) {
@@ -66,8 +66,8 @@ const getAttemptByQuiz = async (req, res) => {
 
     if (!attempts || attempts.length === 0) {
       return res
-        .status(404)
-        .json({ success: false, message: "Attempt không tìm thấy" });
+        .status(200)
+        .json({ success: false, message: "Không tìm thấy attempt nào" });
     }
 
     res.status(200).json({

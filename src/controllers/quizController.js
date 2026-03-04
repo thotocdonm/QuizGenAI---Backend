@@ -140,8 +140,8 @@ const getAllQuizzes = async (req, res) => {
 
     if (quizzes.data.length === 0) {
       return res
-        .status(404)
-        .json({ success: false, message: "Không tìm thấy quiz nào" });
+        .status(200)
+        .json({ message: "Không tìm thấy quiz nào" });
     }
 
     res.status(200).json(quizzes);
@@ -155,8 +155,8 @@ const getQuizById = async (req, res) => {
     const quiz = await Quiz.findById({ _id: req.params.id, isDeleted: false }).select("-isDeleted -deleteAt");
     if (!quiz)
       return res
-        .status(404)
-        .json({ success: false, message: "Quiz không tìm thấy" });
+        .status(200)
+        .json({ message: "Quiz không tồn tại" });
 
     if (quiz.owner.toString() !== req.user.id) {
       return res
@@ -175,8 +175,8 @@ const getQuizPublic = async (req, res) => {
     const quiz = await Quiz.findById({ _id: req.params.id, isDeleted: false }).select("-isDeleted -deleteAt");
     if (!quiz)
       return res
-        .status(404)
-        .json({ success: false, message: "Quiz không tìm thấy" });
+        .status(200)
+        .json({ message: "Quiz không tồn tại" });
 
     res.status(200).json({
       id: quiz._id,
