@@ -10,8 +10,15 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    origin: [
+      process.env.CORS_ORIGIN, 
+      "http://localhost:3000",
+      "https://quizgenai.io.vn",
+      "https://www.quizgenai.io.vn" // Thêm bản có www
+    ].filter(Boolean), // Loại bỏ các giá trị undefined nếu env rỗng
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   }),
 );
 app.use(express.json());
