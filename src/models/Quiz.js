@@ -41,9 +41,6 @@ const quizSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-quizSchema.index(
-  { title: "text", topic: "text" },
-  { weights: { title: 5, topic: 2 } }
-); // Tạo index cho trường title và topic để hỗ trợ tìm kiếm nhanh hơn
+quizSchema.index({ title: "text"}); 
 
 module.exports = mongoose.model("Quiz", quizSchema);
